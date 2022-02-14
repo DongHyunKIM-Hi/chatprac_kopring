@@ -69,14 +69,14 @@
             },
             sendMessage: function () {
                 ws.send("/pub/chat/room/" + this.roomId, {}, JSON.stringify({
-                    type: 'COMMENT',
+                    type: 'TALK',
                     sender: this.sender,
                     message: this.message
                 }));
                 this.message = '';
             },
             recvMessage: function (recv) {
-                if (recv.type === 'COMMENT') {
+                if (recv.type === 'TALK') {
                     this.messages.unshift({
                         "type": recv.type,
                         "sender": recv.sender,
@@ -96,7 +96,7 @@
                 vm.recvMessage(recv);
             });
             ws.send("/pub/chat/room/" + vm.$data.roomId, {}, JSON.stringify({
-                type: 'ENTER',
+                type: 'TALK',
                 sender: vm.$data.sender,
                 message: ''
             }));

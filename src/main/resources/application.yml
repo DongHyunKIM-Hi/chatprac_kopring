@@ -1,13 +1,5 @@
 spring:
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
   freemarker:
     cache: false
     template-loader-path: classpath:/templates
     suffix: .ftlh
-server:
-  port: 8080
