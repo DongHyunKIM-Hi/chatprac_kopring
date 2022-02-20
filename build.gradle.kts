@@ -31,7 +31,7 @@ dependencies {
     implementation("org.webjars.bower:axios:0.17.1")
     implementation("org.webjars:sockjs-client:1.1.2")
     implementation("org.webjars:stomp-websocket:2.3.3-1")
-
+    implementation("org.springframework.security:spring-security-core:5.6.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
