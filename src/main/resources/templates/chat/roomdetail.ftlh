@@ -76,14 +76,11 @@
                 this.message = '';
             },
             recvMessage: function (recv) {
-                if (recv.type === 'TALK') {
-                    this.messages.unshift({
-                        "type": recv.type,
-                        "sender": recv.sender,
-                        "message": recv.message,
-                        "createdAt": recv.createdAt
-                    })
-                }
+                this.messages.unshift({
+                    "type": recv.type,
+                    "sender": recv.sender,
+                    "message": recv.message,
+                    "createdAt": recv.createdAt})
             }
         }
     });
@@ -96,7 +93,7 @@
                 vm.recvMessage(recv);
             });
             ws.send("/pub/chat/room/" + vm.$data.roomId, {}, JSON.stringify({
-                type: 'TALK',
+                type: 'ENTER',
                 sender: vm.$data.sender,
                 message: ''
             }));

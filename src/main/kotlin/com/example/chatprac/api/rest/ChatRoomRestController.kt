@@ -1,8 +1,6 @@
 package com.example.chatprac.api.rest
 
-import com.example.chatprac.api.entity.dto.ChatDto
-import com.example.chatprac.api.entity.dto.ChatRoom
-import com.example.chatprac.api.entity.dto.ChatRoomDto
+import com.example.chatprac.api.entity.dto.*
 import com.example.chatprac.api.entity.dto.toDto
 import com.example.chatprac.api.service.ChatRoomService
 import org.springframework.messaging.handler.annotation.DestinationVariable
@@ -17,6 +15,11 @@ class ChatRoomRestController(
     @MessageMapping("/pub/chat/room/{roomId}")
     @SendTo("/sub/chat/room/{roomId}")
     fun message(@DestinationVariable roomId:String, dto:ChatDto): ChatDto{
+        when(dto.type){
+            Type.ENTER -> dto.message = "${dto.sender}님이 입장하였습니다."
+            Type.LEAVE -> dto.message = "${dto.sender}님이 나갔습니다."
+            else -> println(dto.sender)
+        }
         return dto
     }
 

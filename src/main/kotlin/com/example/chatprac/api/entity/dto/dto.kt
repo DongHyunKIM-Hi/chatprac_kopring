@@ -9,9 +9,9 @@ data class ChatRoomDto(
 )
 
 data class ChatDto(
-    val type: Type,
-    val sender: String,
-    val message: String
+    var type: Type,
+    var sender: String,
+    var message: String
 ){
     val createdAt: String? = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))
 }
