@@ -7,6 +7,8 @@ plugins {
     kotlin("plugin.spring") version "1.5.31"
 }
 
+
+
 group = "study"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -44,4 +46,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.getByName<Jar>("jar"){
+    enabled = false
 }
