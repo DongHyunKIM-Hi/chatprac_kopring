@@ -1,6 +1,6 @@
 package com.example.chatprac.api.service
 
-import com.example.chatprac.api.entity.dto.ChatRoom
+import com.example.chatprac.api.dto.entity.ChatRoom
 import com.example.chatprac.api.repository.ChatRoomRepository
 import org.springframework.stereotype.Service
 

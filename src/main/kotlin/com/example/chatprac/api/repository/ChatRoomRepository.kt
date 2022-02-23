@@ -1,6 +1,6 @@
 package com.example.chatprac.api.repository
 
-import com.example.chatprac.api.entity.dto.ChatRoom
+import com.example.chatprac.api.dto.entity.ChatRoom
 import org.springframework.stereotype.Repository
 
 @Repository

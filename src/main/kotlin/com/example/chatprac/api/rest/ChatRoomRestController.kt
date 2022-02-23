@@ -1,7 +1,7 @@
 package com.example.chatprac.api.rest
 
-import com.example.chatprac.api.entity.dto.*
-import com.example.chatprac.api.entity.dto.toDto
+import com.example.chatprac.api.dto.entity.*
+import com.example.chatprac.api.dto.entity.toDto
 import com.example.chatprac.api.service.ChatRoomService
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping

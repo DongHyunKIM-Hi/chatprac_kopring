@@ -1,4 +1,4 @@
-package com.example.chatprac.api.entity.dto
+package com.example.chatprac.api.dto.entity
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

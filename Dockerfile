@@ -8,6 +8,7 @@ FROM openjdk:16-jdk-alpine
 COPY ./build/libs/*.jar ./app.jar
 # Spring jar 파일을 복사하여 app.jar 변수를 생성하였다. 그 이유는 spring jar의 이름에 상관없이 하기 위해서 app.jar로 통일 하여 이미지를 빌드하기 위해서이다.
 
+
 ENTRYPOINT ["java","-jar","/app.jar"]
 # ENTRYPOINT는 이미지를 컨테이너화 시킬 때 Spring이 구동을 자동화 시키기 위한 shell 스크립트이다.ENTRYPOINT
 

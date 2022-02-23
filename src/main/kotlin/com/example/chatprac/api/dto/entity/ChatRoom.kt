@@ -1,4 +1,4 @@
-package com.example.chatprac.api.entity.dto
+package com.example.chatprac.api.dto.entity
 
 data class ChatRoom(
     val name: String

@@ -34,7 +34,9 @@ dependencies {
     implementation("org.webjars:sockjs-client:1.1.2")
     implementation("org.webjars:stomp-websocket:2.3.3-1")
     implementation("org.springframework.security:spring-security-core:5.6.1")
+    implementation("org.projectlombok:lombok:1.18.20")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis:2.6.3")
 }
 
 tasks.withType<KotlinCompile> {
