@@ -35,7 +35,11 @@ dependencies {
     implementation("org.webjars:stomp-websocket:2.3.3-1")
     implementation("org.springframework.security:spring-security-core:5.6.1")
     implementation("org.projectlombok:lombok:1.18.20")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework.security:spring-security-jwt:1.1.1.RELEASE")
+    implementation("org.springframework.security:spring-security-core:5.6.1")
+
     implementation("org.springframework.boot:spring-boot-starter-data-redis:2.6.3")
 }
 

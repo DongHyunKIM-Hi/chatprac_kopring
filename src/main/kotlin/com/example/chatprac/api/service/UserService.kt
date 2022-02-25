@@ -5,6 +5,8 @@ import com.example.chatprac.api.dto.request.UserRequest
 import com.example.chatprac.api.dto.response.UserResponse
 import com.example.chatprac.api.dto.response.userResponseof
 import com.example.chatprac.api.repository.UserRepository
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
@@ -12,8 +14,11 @@ class UserService(
     private val userRepository: UserRepository
 ) {
     fun createUser(userRequest: UserRequest): UserResponse{
-        val user: User = User(userRequest.id,userRequest.name,userRequest.nickName,userRequest.password)
+
+        val passwordEncoder : PasswordEncoder = BCryptPasswordEncoder()
+        val user: User = User(userRequest.id,userRequest.name,userRequest.nickName,passwordEncoder.encode(userRequest.password))
         userRepository.save(user)
+
         return userResponseof(user)
     }
 
