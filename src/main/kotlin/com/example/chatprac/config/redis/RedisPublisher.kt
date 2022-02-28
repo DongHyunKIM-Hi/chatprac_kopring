@@ -1,4 +1,4 @@
-package com.example.chatprac.config
+package com.example.chatprac.config.redis
 
 import com.example.chatprac.api.dto.entity.ChatDto
 import lombok.RequiredArgsConstructor

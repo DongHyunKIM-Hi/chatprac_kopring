@@ -27,7 +27,7 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
 
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
-
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
     implementation("org.webjars.bower:bootstrap:4.3.1")
     implementation("org.webjars.bower:vue:2.5.16")
     implementation("org.webjars.bower:axios:0.17.1")
@@ -39,8 +39,10 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.security:spring-security-jwt:1.1.1.RELEASE")
     implementation("org.springframework.security:spring-security-core:5.6.1")
-
+    implementation("org.springframework.kafka:spring-kafka:2.8.2")
     implementation("org.springframework.boot:spring-boot-starter-data-redis:2.6.3")
+    implementation("org.springframework.boot:spring-boot-starter-validation:2.6.3")
+
 }
 
 tasks.withType<KotlinCompile> {

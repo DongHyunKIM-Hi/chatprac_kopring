@@ -3,16 +3,15 @@ package com.example.chatprac.api.rest
 import com.example.chatprac.api.dto.entity.*
 import com.example.chatprac.api.dto.entity.toDto
 import com.example.chatprac.api.service.ChatRoomService
-import com.example.chatprac.config.RedisPublisher
-import com.example.chatprac.config.RedisSubscriber
-import org.springframework.data.crossstore.ChangeSetPersister
+import com.example.chatprac.config.redis.RedisPublisher
+import com.example.chatprac.config.redis.RedisSubscriber
 import org.springframework.data.redis.listener.ChannelTopic
 import org.springframework.data.redis.listener.RedisMessageListenerContainer
+import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.SendTo
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.client.HttpClientErrorException
 import java.util.*
 
 @RestController
@@ -20,8 +19,10 @@ class ChatRoomRestController(
     private val chatRoomService: ChatRoomService,
     private val redisMessageListenerContainer: RedisMessageListenerContainer,
     private val redisPublisher: RedisPublisher,
-    private val redisSubscriber: RedisSubscriber
-) {
+    private val redisSubscriber: RedisSubscriber,
+    private val kafkaTemplate: KafkaTemplate<String,String>
+    )
+{
     @MessageMapping("/pub/chat/room/{roomId}")
     @SendTo("/sub/chat/room/{roomId}")
     fun message(@DestinationVariable roomId:String, dto:ChatDto): ChatDto{
@@ -32,6 +33,7 @@ class ChatRoomRestController(
         }
         val topic = ChannelTopic(roomId)
         redisPublisher.publish(topic,dto)
+
         return dto
     }
 
@@ -47,11 +49,14 @@ class ChatRoomRestController(
     @PostMapping(
         value = ["/api/v1/chat/room/enter"]
     )
-    fun enterRoom(@RequestParam topic: String) : ChatRoomDto{
+    fun enterRoom(@RequestParam topic: String) : ChatRoomDto? {
         val topic = chatRoomService.findById(topic)
-        val channelTopic = ChannelTopic(topic.get().topic)
-        redisMessageListenerContainer.addMessageListener(redisSubscriber,channelTopic)
-        return topic.get().toDto()
+        if(topic.isPresent) {
+            val channelTopic = ChannelTopic(topic.get().topic)
+            redisMessageListenerContainer.addMessageListener(redisSubscriber, channelTopic)
+            return topic.get().toDto()
+        }
+        return null
     }
 
 
@@ -67,5 +72,13 @@ class ChatRoomRestController(
     )
     fun findById(@PathVariable topic: String): Optional<ChatRoom> { // topic(채팅방) 찾기
         return chatRoomService.findById(topic)
+    }
+
+
+    @PostMapping(
+        value = ["/api/v1/chat/test/{test}"]
+    )
+    fun testchat(@PathVariable test:String) : Unit {
+        kafkaTemplate.send("viva",test)
     }
 }

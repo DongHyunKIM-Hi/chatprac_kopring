@@ -1,10 +1,9 @@
-package com.example.chatprac.config
+package com.example.chatprac.config.redis
 
 import com.example.chatprac.api.dto.entity.ChatDto
 import com.fasterxml.jackson.databind.ObjectMapper
 import lombok.RequiredArgsConstructor
 import lombok.extern.slf4j.Slf4j
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.redis.connection.Message
 import org.springframework.data.redis.connection.MessageListener
 import org.springframework.data.redis.core.RedisTemplate

@@ -1,8 +1,6 @@
-package com.example.chatprac.config
+package com.example.chatprac.config.redis
 
-import com.example.chatprac.api.dto.entity.ChatDto
 import lombok.RequiredArgsConstructor
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
