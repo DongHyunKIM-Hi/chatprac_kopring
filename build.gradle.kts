@@ -27,7 +27,6 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
 
     implementation("org.springframework.boot:spring-boot-starter-freemarker")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.1")
     implementation("org.webjars.bower:bootstrap:4.3.1")
     implementation("org.webjars.bower:vue:2.5.16")
     implementation("org.webjars.bower:axios:0.17.1")
