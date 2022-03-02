@@ -1,5 +1,6 @@
 package com.example.chatprac.api.service
 
+import com.example.chatprac.api.dto.entity.ChatDto
 import com.example.chatprac.api.dto.entity.ChatRoom
 import com.example.chatprac.api.dto.entity.ChatRoomDto
 import com.example.chatprac.api.dto.entity.toDto
@@ -65,5 +66,14 @@ class ChatRoomService(
         println(offset)
 
 }
+
+    @KafkaListener(id = "viva_listener_chatDto", topics = ["viva2"], containerFactory = "concurrentKafkaListenerContainer") // concurrentContainer을 사용하기 위해서는 listener에 containerFactory 값을 꼭 설정해줘야 정확히 값을 받을 수 있다.
+    fun listenChatDto(message : ChatDto,
+
+    ) {
+        println("=======receive==========")
+        print(message.toString())
+
+    }
 
 }

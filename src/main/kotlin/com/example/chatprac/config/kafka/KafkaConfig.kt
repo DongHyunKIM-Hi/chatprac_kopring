@@ -9,10 +9,13 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
+import org.springframework.kafka.config.KafkaListenerContainerFactory
 import org.springframework.kafka.core.*
 import org.springframework.kafka.listener.ContainerProperties
 import org.springframework.kafka.listener.KafkaMessageListenerContainer
-import springfox.documentation.spring.web.json.JsonSerializer
+import org.springframework.kafka.support.serializer.JsonDeserializer
+import org.springframework.kafka.support.serializer.JsonSerializer
 
 @Configuration
 class KafkaConfig {
@@ -54,16 +57,16 @@ class KafkaConfig {
     }
 
     @Bean
-    fun kafkaMessageListenerContainer(): KafkaMessageListenerContainer<String, String>{
-        val containerProperties = ContainerProperties("viva")
-        containerProperties.setGroupId("viva-container")
-        containerProperties.ackMode = ContainerProperties.AckMode.BATCH
+    fun kafkaMessageListenerContainer(): KafkaMessageListenerContainer<String, String>{ // kafkaMessageListenerContainer는 single thread 이다.
+        val containerProperties = ContainerProperties("viva")  // 소비하려는 토픽을 설정해준다.
+        containerProperties.setGroupId("viva-container") // 소비 그룹을 생성한다. * 반드시 설정해줘야함 소비 그룹이 있어야 id도 생성되고 오류가 안남
+        containerProperties.ackMode = ContainerProperties.AckMode.BATCH // 추가적인 설정 모드를 설정 할 수 있음
         containerProperties.messageListener = DefaultMessageListener()
 
-        return KafkaMessageListenerContainer(containerFactory(),containerProperties)
+        return KafkaMessageListenerContainer(containerFactory(),containerProperties)  // 생성한 cunsumerFactory를 등록해주고 앞서 설정한 container 설정값을 등록해준다.
     }
 
-    private fun containerFactory(): ConsumerFactory<String, String> {
+    private fun containerFactory(): ConsumerFactory<String, String> { // 소비자 cunsumer의 설정 값을 설정하여 cunsumerFactory를 생성한다.
         val props: HashMap<String, Any> = HashMap()
         props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
         props[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
@@ -71,5 +74,21 @@ class KafkaConfig {
         return DefaultKafkaConsumerFactory(props)
     }
 
+
+    @Bean
+    fun concurrentKafkaListenerContainer(): ConcurrentKafkaListenerContainerFactory<String, ChatDto>{ // 1개 이상의 consumerFacotry를 사용하는 multi thread 이다.
+        val factory = ConcurrentKafkaListenerContainerFactory<String,ChatDto>() // container 생성
+        factory.setConcurrency(1) // 병렬 처리를 위한 복제품 생성
+        factory.consumerFactory = cumsumerFactory() // container에 등록할 cunsumerFactory 설정
+        return factory
+    }
+
+    private fun cumsumerFactory() : ConsumerFactory<String, ChatDto>{  // 소비자 cunsumer의 설정 값을 설정하여 cunsumerFactory를 생성한다. containerFactory() 메소드와 동일하다.
+        val config : HashMap<String, Any> = HashMap()
+        config[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
+        config[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java // kafka의 데이터를 역직열화 할 key 타입
+        config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = JsonDeserializer::class.java // kafka의 데이터를 역직열화 할 value 타입
+        return DefaultKafkaConsumerFactory(config,StringDeserializer(),JsonDeserializer(ChatDto::class.java)) // 역직열화 할 value 값이 object 이기 때문에 직접 주입해줘야 오류가 발생하지 않는다.
+    }
 
 }
