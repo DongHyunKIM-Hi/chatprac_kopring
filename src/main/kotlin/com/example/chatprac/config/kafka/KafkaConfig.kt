@@ -22,14 +22,21 @@ import org.springframework.kafka.support.serializer.JsonSerializer
 class KafkaConfig {
 
     @Bean
-    fun kafkaAdin(kafkaProperties: KafkaProperties): KafkaAdmin{
-        val configs: Map<String,Any> = kafkaProperties.buildAdminProperties()
+    fun kafkaAdin(kafkaProperties: KafkaProperties): KafkaAdmin{ // KafkaAdmin은 spring boot에서 kafka를 관리하는 관리자를 생성하기 위한 설정 값 들을 가지고 있다. spring boot에서 별도의 설정 없이 자동으로 생성해주고 있다. 자동 생성될 경우 모든 설정은 default로 적용된다.
+        val configs: Map<String,Any> = kafkaProperties.buildAdminProperties()  // 이 경우에는 @Bean으로 사용자가 생성해준경우이다.  default 설정 값을 사용하기 싫다면 이렇게 직접 생성해줘도 된다.
         val kafkaAdmin = KafkaAdmin(configs)
         with(kafkaAdmin) {
             setAutoCreate(false)
         }
         return kafkaAdmin
     }
+
+    @Bean
+    fun adminClient(kafkaAdmin: KafkaAdmin): AdminClient{ // kafka의 topics, brokers, partition 등을 관리하는 역할을 하는 관리자로 KafkaAdmin에서 설정한 설정 값들을 기준으로 생성된다. adminClient는 자동으로 생성되지 않고 직접 생성해줘야 한다.
+        return AdminClient.create(kafkaAdmin.configurationProperties) // KafkaAdmin의 설정값을 통해서 adminClient 생성
+    }
+
+
     @Bean
     fun kafkaTemplate(): KafkaTemplate<String,String>{
         return KafkaTemplate(producerFactory())
