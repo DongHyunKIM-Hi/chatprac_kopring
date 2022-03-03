@@ -21,8 +21,6 @@ class ChatRoomRestController(
     private val redisMessageListenerContainer: RedisMessageListenerContainer,
     private val redisPublisher: RedisPublisher,
     private val redisSubscriber: RedisSubscriber,
-    private val kafkaTemplate: KafkaTemplate<String,String>,
-    private val kafkaCustomTemplate : KafkaTemplate<String, ChatDto>
     )
 {
     @MessageMapping("/pub/chat/room/{roomId}")
@@ -74,22 +72,5 @@ class ChatRoomRestController(
     )
     fun findById(@PathVariable topic: String): Optional<ChatRoom> { // topic(채팅방) 찾기
         return chatRoomService.findById(topic)
-    }
-
-
-    @PostMapping(
-        value = ["/api/v1/kafka/chat/{test}"]
-    )
-    fun testchat(@PathVariable test:String) {
-        kafkaTemplate.send("viva",test)
-    }
-
-
-
-    @PostMapping(
-        value = ["/api/v1/kafka/chat"]
-    )
-    fun testChatDto(@RequestBody dto:ChatDto){
-        kafkaCustomTemplate.send("viva2", dto)
     }
 }

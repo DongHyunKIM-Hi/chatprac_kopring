@@ -93,6 +93,7 @@ class KafkaConfig {
 
     private fun cumsumerFactory() : ConsumerFactory<String, ChatDto>{  // 소비자 cunsumer의 설정 값을 설정하여 cunsumerFactory를 생성한다. containerFactory() 메소드와 동일하다.
         val config : HashMap<String, Any> = HashMap()
+        config[ConsumerConfig.GROUP_ID_CONFIG]
         config[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
         config[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java // kafka의 데이터를 역직열화 할 key 타입
         config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = JsonDeserializer::class.java // kafka의 데이터를 역직열화 할 value 타입
