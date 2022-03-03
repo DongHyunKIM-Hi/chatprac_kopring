@@ -2,6 +2,7 @@ package com.example.chatprac.config.kafka
 
 import com.example.chatprac.api.dto.entity.ChatDto
 import com.example.chatprac.config.kafka.listener.DefaultMessageListener
+import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -29,7 +30,6 @@ class KafkaConfig {
         }
         return kafkaAdmin
     }
-
     @Bean
     fun kafkaTemplate(): KafkaTemplate<String,String>{
         return KafkaTemplate(producerFactory())
@@ -38,6 +38,7 @@ class KafkaConfig {
     private fun producerFactory(): ProducerFactory<String, String> {
         val configProps : HashMap<String, Any> = hashMapOf()
         configProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
+        //configProps[ProducerConfig.ACKS_CONFIG] = default는 -1 (all) 모든 브로커에서 데이터를 잘 받았다고 응답이 되면 통과한다.
         configProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         configProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         return DefaultKafkaProducerFactory(configProps)
@@ -76,7 +77,7 @@ class KafkaConfig {
 
 
     @Bean
-    fun concurrentKafkaListenerContainer(): ConcurrentKafkaListenerContainerFactory<String, ChatDto>{ // 1개 이상의 consumerFacotry를 사용하는 multi thread 이다.
+    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, ChatDto>{ // 1개 이상의 consumerFacotry를 사용하는 multi thread 이다.
         val factory = ConcurrentKafkaListenerContainerFactory<String,ChatDto>() // container 생성
         factory.setConcurrency(1) // 병렬 처리를 위한 복제품 생성
         factory.consumerFactory = cumsumerFactory() // container에 등록할 cunsumerFactory 설정
