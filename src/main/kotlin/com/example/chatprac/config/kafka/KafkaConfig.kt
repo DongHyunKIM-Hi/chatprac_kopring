@@ -21,6 +21,16 @@ import org.springframework.kafka.support.serializer.JsonSerializer
 @Configuration
 class KafkaConfig {
 
+    /*
+
+    관리자
+
+    kafka를 spring에서 관리하기 쉽게 client를 만들어서 kafak의 자산을 관리할 수 있다.
+
+
+     */
+
+
     @Bean
     fun kafkaAdin(kafkaProperties: KafkaProperties): KafkaAdmin{ // KafkaAdmin은 spring boot에서 kafka를 관리하는 관리자를 생성하기 위한 설정 값 들을 가지고 있다. spring boot에서 별도의 설정 없이 자동으로 생성해주고 있다. 자동 생성될 경우 모든 설정은 default로 적용된다.
         val configs: Map<String,Any> = kafkaProperties.buildAdminProperties()  // 이 경우에는 @Bean으로 사용자가 생성해준경우이다.  default 설정 값을 사용하기 싫다면 이렇게 직접 생성해줘도 된다.
@@ -35,6 +45,13 @@ class KafkaConfig {
     fun adminClient(kafkaAdmin: KafkaAdmin): AdminClient{ // kafka의 topics, brokers, partition 등을 관리하는 역할을 하는 관리자로 KafkaAdmin에서 설정한 설정 값들을 기준으로 생성된다. adminClient는 자동으로 생성되지 않고 직접 생성해줘야 한다.
         return AdminClient.create(kafkaAdmin.configurationProperties) // KafkaAdmin의 설정값을 통해서 adminClient 생성
     }
+
+    /*
+
+    생성자 producer
+
+
+     */
 
 
     @Bean
@@ -64,6 +81,31 @@ class KafkaConfig {
         return DefaultKafkaProducerFactory(config) // 설정을 셋팅했으면 실질적으로 template을 생성해주는 Factory에 설정값을 넣어서 호출한다. 여기서는 default factory로 생성하였지만 이외에도 다양한 생성자가 존재한다.
     }
 
+    /*
+
+    소비자 consumer or listener
+
+    @kafkaListener(id= "group id", topics = "받고 싶은 토픽 아이디")
+
+
+
+     */
+
+
+    /*
+
+    kafkaMessageListenerContainer은 record를 하나씩 처리하는 single thread이다.
+
+    해당 컨테이너를 사용할 때는 반드시 groupId를 설정해주고 해당 컨테이너로 record를 받고 싶을 때는 id에 설정한 groupId를 넣어줘서 맵핑 시켜준다.
+
+    ex)
+    토픽을 viva 설정하고 groupId를 viva-container로 설정했다면 kafka listener은 아래와 같이 설정해 줘야 한다.
+
+     @KafkaListener(id = "viva-container", topics = ["viva"])
+
+     */
+
+
     @Bean
     fun kafkaMessageListenerContainer(): KafkaMessageListenerContainer<String, String>{ // kafkaMessageListenerContainer는 single thread 이다.
         val containerProperties = ContainerProperties("viva")  // 소비하려는 토픽을 설정해준다.
@@ -81,6 +123,14 @@ class KafkaConfig {
         props[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java
         return DefaultKafkaConsumerFactory(props)
     }
+
+    /*
+
+    ConcurrentKafkaListenerContainerFactory는 record를 한번에 여러개를 동시에 처리할 수 있는 multi-thread다.
+
+    해당 컨테이너를 사용할 때는 group-id를 설정할 필요가 없고 원하는 consumer group id를 @KafkaListener에 id쪽으로 입력해주면 된다. 
+
+     */
 
 
     @Bean

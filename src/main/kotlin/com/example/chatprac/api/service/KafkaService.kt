@@ -31,14 +31,16 @@ class KafkaService(
 
     // kafkaListener은 kafka에 어떤 리스너가 데이터를 읽어 갔는지 로그를 찍기 위한 id 값이다.
 
-    @KafkaListener(id = "test1", topics = ["viva"])
+    @KafkaListener(id = "viva-container", topics = ["viva"])
     fun getRecord(
         data : String
     ){
         println(data)
     }
 
-    @KafkaListener(id = "test2", topics = ["viva2"])
+    //
+
+    @KafkaListener(id = "listener-test1", topics = ["viva2"])
     fun getRecord(
         data : ChatDto
     ){
