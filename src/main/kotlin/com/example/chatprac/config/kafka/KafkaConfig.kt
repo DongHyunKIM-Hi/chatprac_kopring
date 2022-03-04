@@ -85,8 +85,9 @@ class KafkaConfig {
 
     소비자 consumer or listener
 
-    @kafkaListener(id= "group id", topics = "받고 싶은 토픽 아이디")
+    @kafkaListener(id= "consumer instance id 설정", topics = "받고 싶은 토픽 아이디", groupId = "consumer group id 설정")
 
+    
 
 
      */
