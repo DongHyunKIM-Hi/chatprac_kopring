@@ -140,7 +140,7 @@ class KafkaConfig {
     @Bean
     fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<String, ChatDto>{ // 1개 이상의 consumerFacotry를 사용하는 multi thread 이다.
         val factory = ConcurrentKafkaListenerContainerFactory<String,ChatDto>() // container 생성
-        factory.setConcurrency(1) // 병렬 처리를 위한 복제품 생성
+        factory.setConcurrency(1) // 병렬 처리를 위한 쓰레드 할당
         factory.consumerFactory = cumsumerFactory() // container에 등록할 cunsumerFactory 설정
         return factory
     }
@@ -151,16 +151,51 @@ class KafkaConfig {
         config[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
         config[ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG] = StringDeserializer::class.java // kafka의 데이터를 역직열화 할 key 타입
         config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = JsonDeserializer::class.java // kafka의 데이터를 역직열화 할 value 타입
+        // config[ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG] = 여기서 partition을 thread에 할당하는 전략을 선택 할 수 있다.
         return DefaultKafkaConsumerFactory(config,StringDeserializer(),JsonDeserializer(ChatDto::class.java)) // 역직열화 할 value 값이 object 이기 때문에 직접 주입해줘야 오류가 발생하지 않는다.
     }
 
+
     /*
 
-    효율적인 concurrency 생성
 
+
+    서버가 구동하면서 ConcurrentKafkaListenerContainerFactory를 생성할 때 서버에 할당할 thread의 숫자를  factory.setConcurrency(*) 를 통해서 설정 할 수 있다.
+
+    default 설정은 1개의 thread가 1개의 partition을 담당하고 있으니 topic의 partition의 개수 만큼 thread를 생성해주는게 가장 효율적이다.
+
+    default 설정
+
+    이렇게 할당 받은 thread는 각 topic 별 1개의 partition을 전담으로 담당한다. 즉 3개의 topic이 있다면 1개의 thread는 각각의 topic의 1개의 partition을 담당하게 되니 thread당 3개의 partition을 담당한다.
+
+
+
+    ex)
+
+    thread 1, thread 2 , thread 3
+
+    topic 1
+    partition 1.1, partition 1.2 , partition 1.3
+
+    topic 2
+    partition 2.1, partition 2.2 , partition 2.3
+
+    topic 3
+    partition 3.1, partition 3.2 , partition 3.3
+
+    thread에 할당된 자원
+
+    thread 1 = partition 1.1, 2.1, 3.1
+
+    thread 2 = partition 1.2, 2.2, 3.2
+
+    thread 3 = partition 1.3, 2.3, 3.3
+
+    만약 다른 설정을 원한다면
+
+    ConsumerConfig.PARTITION_ASSIGNMENT_STRATEGY_CONFIG 를 수정하면 된다.
 
 
      */
-
 
 }
