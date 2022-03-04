@@ -71,7 +71,7 @@ class KafkaService(
 
     fun createTopic(topic : String){ // topic 생성
 
-        val topic = NewTopic(topic,1,1)
+        val topic = NewTopic(topic,2,1)
 
         adminClient.createTopics(Collections.singleton(topic))
     }

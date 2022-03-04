@@ -128,7 +128,11 @@ class KafkaConfig {
 
     ConcurrentKafkaListenerContainerFactory는 record를 한번에 여러개를 동시에 처리할 수 있는 multi-thread다.
 
-    해당 컨테이너를 사용할 때는 group-id를 설정할 필요가 없고 원하는 consumer group id를 @KafkaListener에 id쪽으로 입력해주면 된다. 
+    해당 컨테이너를 사용할 때는 group-id를 설정할 필요가 없고 원하는 consumer group id를 @KafkaListener에 id쪽으로 입력해주면 된다.
+
+    또한 컨테이너를 여러개 등록이 가능하다 다만 @kafkaListener에 특정 container를 등록해주려면
+
+     @KafkaListener( containerFactory = "컨테이너 이름") 이렇게 지정해줘야 한다.
 
      */
 
@@ -149,5 +153,14 @@ class KafkaConfig {
         config[ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG] = JsonDeserializer::class.java // kafka의 데이터를 역직열화 할 value 타입
         return DefaultKafkaConsumerFactory(config,StringDeserializer(),JsonDeserializer(ChatDto::class.java)) // 역직열화 할 value 값이 object 이기 때문에 직접 주입해줘야 오류가 발생하지 않는다.
     }
+
+    /*
+
+    효율적인 concurrency 생성
+
+
+
+     */
+
 
 }
